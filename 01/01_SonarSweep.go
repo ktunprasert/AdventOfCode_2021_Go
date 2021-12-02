@@ -27,7 +27,7 @@ func slidingWindowSum(depths []int64) (windowDepth []int64) {
 
 func main() {
 	// Big Test 1
-	big_test := helper.ReadFile("01.txt")
+	big_test := helper.ReadFileAsInt("01.txt")
 	// fmt.Println(big_test)
 	out := countDepthIncreased(big_test)
 
