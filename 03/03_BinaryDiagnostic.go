@@ -46,51 +46,33 @@ func calculatePowerConsumption(lines []string) (powerConsumption int) {
 	return
 }
 
-func calculateLifeSupport(lines []string) (lifeSupport int) {
-	var o2stack []string = lines
-	var co2stack []string = lines
+func filterStack(lines []string, shouldReverse int) (filtered string) {
+	var stack []string = lines
 	i := 0
-	for len(o2stack) > 1 {
-		// O2
-		o2_bits := linesToBits(o2stack)
-		new_o2_stack := []string{}
-		o2_take := 1
-		if o2_bits[i] < 0 {
-			o2_take = 0
+	for len(stack) > 1 {
+		bits := linesToBits(stack)
+		new_stack := []string{}
+		take := 1 ^ shouldReverse
+		if bits[i] < 0 {
+			take = 0 ^ shouldReverse
 		}
 
-		for _, v := range o2stack {
-			if convertRuneToInt(rune(v[i])) == o2_take {
-				new_o2_stack = append(new_o2_stack, v)
+		for _, v := range stack {
+			if convertRuneToInt(rune(v[i])) == take {
+				new_stack = append(new_stack, v)
 			}
 		}
 
-		o2stack = new_o2_stack
+		stack = new_stack
 		i++
 	}
+	return stack[0]
+}
 
-	i = 0
-	for len(co2stack) > 1 {
-		// CO2
-		co2_bits := linesToBits(co2stack)
-		new_co2_stack := []string{}
-		co2_take := 0
-		if co2_bits[i] < 0 {
-			co2_take = 1
-		}
+func calculateLifeSupport(lines []string) (lifeSupport int) {
+	o2, _ := strconv.ParseInt(filterStack(lines, 0), 2, 16)
+	co2, _ := strconv.ParseInt(filterStack(lines, 1), 2, 16)
 
-		for _, v := range co2stack {
-			if convertRuneToInt(rune(v[i])) == co2_take {
-				new_co2_stack = append(new_co2_stack, v)
-			}
-		}
-
-		co2stack = new_co2_stack
-		i++
-	}
-
-	o2, _ := strconv.ParseInt(o2stack[0], 2, 16)
-	co2, _ := strconv.ParseInt(co2stack[0], 2, 16)
 	lifeSupport = int(o2 * co2)
 	return
 }
